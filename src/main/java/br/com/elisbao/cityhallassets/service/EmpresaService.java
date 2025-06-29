@@ -7,6 +7,7 @@ import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @ApplicationScoped
 public class EmpresaService {
@@ -20,4 +21,10 @@ public class EmpresaService {
         empresaRepository.persist(empresa);
         return empresa;
     }
+
+    @Transactional
+    public List<Empresa> listarTodas() {
+        return empresaRepository.listAll();
+    }
+
 }

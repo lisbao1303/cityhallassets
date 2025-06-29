@@ -1,6 +1,7 @@
 package br.com.elisbao.cityhallassets.controller;
 
 import br.com.elisbao.cityhallassets.dto.ConfirmacaoDTO;
+import br.com.elisbao.cityhallassets.dto.ItemCadastroDTO;
 import br.com.elisbao.cityhallassets.model.Item;
 import br.com.elisbao.cityhallassets.service.ItemService;
 import jakarta.inject.Inject;
@@ -23,9 +24,9 @@ public class ItemResource {
     ItemService itemService;
     // 1. Cadastro de Patrimônios OK
     @POST
-    public Response cadastrarPatrimonio(Item patrimonio) {
-        itemService.salvar(patrimonio);
-        return Response.status(Response.Status.CREATED).build();
+    public Response cadastrarPatrimonio(ItemCadastroDTO patrimonio) {
+        Item item = itemService.salvar(patrimonio);
+        return Response.status(Response.Status.CREATED).entity(item).build();
     }
 
     // 2. Validação de Patrimônio OK
@@ -45,8 +46,8 @@ public class ItemResource {
     // 3. Listar Patrimônios Ativos OK
     @GET
     @Path("/ativos")
-    public Response listarPatrimoniosAtivos(@QueryParam("cnpj") String cnpj) {
-        List<Item> ativos = itemService.listarAtivosPorEmpresa(cnpj);
+    public Response listarPatrimoniosAtivos(@QueryParam("id") String id) {
+        List<Item> ativos = itemService.listarAtivosPorEmpresa(id);
         return Response.ok(ativos).build();
     }
 

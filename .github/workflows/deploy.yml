@@ -1,0 +1,39 @@
+name: Deploy Quarkus to Oracle Cloud
+
+on:
+  push:
+    branches:
+      - main  # ou a branch que desejar
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+
+      - name: Set up Java 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Build do projeto com Maven
+        run: ./mvnw clean package -DskipTests
+
+      - name: Criar chave SSH temporária
+        run: |
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > key.pem
+          chmod 600 key.pem
+
+      - name: Copiar JAR para instância OCI
+        run: |
+          scp -i key.pem -o StrictHostKeyChecking=no target/*-runner.jar ${{ secrets.OCI_USER }}@${{ secrets.OCI_HOST }}:/home/${{ secrets.OCI_USER }}/app.jar
+
+      - name: Rodar app na instância
+        run: |
+          ssh -i key.pem -o StrictHostKeyChecking=no ${{ secrets.OCI_USER }}@${{ secrets.OCI_HOST }} << 'EOF'
+            pkill -f 'java.*app.jar' || true
+            nohup java -jar /home/${{ secrets.OCI_USER }}/app.jar > log.txt 2>&1 &
+          EOF
