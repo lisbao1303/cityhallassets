@@ -20,7 +20,7 @@ jobs:
           distribution: 'temurin'
 
       - name: Build do projeto com Maven
-        run: ./mvnw clean package -DskipTests
+        run: ./mvnw clean package -DskipTests -Dquarkus.package.type=uber-jar
 
       - name: Criar chave SSH temporária
         run: |
