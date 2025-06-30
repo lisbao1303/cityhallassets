@@ -15,7 +15,7 @@ import java.util.List;
 public class ItemRepository implements PanacheRepository<Item> {
 
     public Item findByCodigo(String codigo) {
-        return find("numero_patrimonio", codigo).firstResult();
+        return find("numeroPatrimonio = ?1", codigo).firstResult();
     }
 
     public List<Item> findAtivosByEmpresaCnpj(String empresa_id) {
