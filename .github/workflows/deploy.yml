@@ -3,7 +3,7 @@ name: Deploy Quarkus to Oracle Cloud
 on:
   push:
     branches:
-      - main  # ou a branch que desejar
+      - main
 
 jobs:
   build-and-deploy:
